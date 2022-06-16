@@ -1,4 +1,5 @@
-// import * as basicLightbox from 'basiclightbox'
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 import Notiflix from 'notiflix';
 import PhotoApiService from './photo-service';
 import LoadMoreBtn from './load-more';
@@ -32,6 +33,7 @@ let numberOfHits = ''
 let totalNumberOfHits = ''
 function findFotoByName (e) {
     e.preventDefault()
+    
       photoApiService.query = refs.input.value;
     if(photoApiService.query === '') {
       Notiflix.Notify.warning("Fill in search field")
@@ -43,8 +45,6 @@ function findFotoByName (e) {
     photoApiService.fetchPhotos().then(data => {
       numberOfHits = data.hits.length
       totalNumberOfHits = data.totalHits 
-      console.log(numberOfHits)
-      console.log(totalNumberOfHits)
       if(data.hits.length === 0) {
         Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
       }
@@ -53,15 +53,15 @@ function findFotoByName (e) {
       const markup = data.hits.map(el =>   
       `
        <div class="photo-card">
-       
-          <img 
-          src="${el.webformatURL}" 
-          alt="${el.tags}" 
-          loading="lazy" 
-          class="image"
-          width = 100%
-          />       
-       
+            <a href="${el.largeImageURL }"> 
+              <img 
+              src="${el.webformatURL}" 
+              alt="${el.tags}" 
+              loading="lazy" 
+              class="image"
+              width = 100%
+               />    
+            </a>
        
           <div class="info">
             <p class="info-item">
@@ -83,7 +83,7 @@ function findFotoByName (e) {
     ).join('')
    
   refs.gallery.insertAdjacentHTML('beforeend', markup)
-  
+  var lightbox = new SimpleLightbox('.photo-card a', {captionsData: 'alt', captionDelay: 250});
       }
     )
     loadMoreBtn.show()
@@ -94,11 +94,9 @@ function findFotoByName (e) {
     photoApiService.fetchPhotos().then(data => {
       numberOfHits += data.hits.length
       if(totalNumberOfHits < numberOfHits) {
-        Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
-        return
+        Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+         
       }
-      console.log("numberOfHits", numberOfHits)
-      console.log("data.totalHits", totalNumberOfHits)
       if(data.hits.length === 0) {
         Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
       }
@@ -106,14 +104,16 @@ function findFotoByName (e) {
       const markup = data.hits.map(el =>   
       `
        <div class="photo-card">
-       
-          <img 
-          src="${el.webformatURL}" 
-          alt="${el.tags}" 
-          loading="lazy" 
-          class="image"
-          width = 100%
-          />       
+           <a href="${el.largeImageURL}"> 
+              <img 
+              src="${el.webformatURL}" 
+              alt="${el.tags}" 
+              loading="lazy" 
+              class="image"
+              width = 100%
+              />    
+           </a>
+             
        
        
           <div class="info">
@@ -136,7 +136,7 @@ function findFotoByName (e) {
     ).join('')
     
   refs.gallery.insertAdjacentHTML('beforeend', markup)
-  
+  var lightbox = new SimpleLightbox('.photo-card a',  {captionsData: 'alt', captionDelay: 250});
     loadMoreBtn.show()
   
       }
