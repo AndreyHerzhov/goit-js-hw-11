@@ -28,6 +28,8 @@ const loadMoreBtn = new LoadMoreBtn({
 
 console.log(loadMoreBtn);
 
+let numberOfHits = ''
+let totalNumberOfHits = ''
 function findFotoByName (e) {
     e.preventDefault()
       photoApiService.query = refs.input.value;
@@ -38,12 +40,17 @@ function findFotoByName (e) {
     refs.input.value = ''
     photoApiService.resetPage()
     
-    photoApiService.fetchPhotos().then(hits => {
-      if(hits.length === 0) {
+    photoApiService.fetchPhotos().then(data => {
+      numberOfHits = data.hits.length
+      totalNumberOfHits = data.totalHits 
+      console.log(numberOfHits)
+      console.log(totalNumberOfHits)
+      if(data.hits.length === 0) {
         Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
       }
+      Notiflix.Notify.success(`Hooray! We found ${totalNumberOfHits} images.`);
       refs.gallery.innerHTML = ''  
-      const markup = hits.map(el =>   
+      const markup = data.hits.map(el =>   
       `
        <div class="photo-card">
        
@@ -74,7 +81,7 @@ function findFotoByName (e) {
      `  
      
     ).join('')
-    
+   
   refs.gallery.insertAdjacentHTML('beforeend', markup)
   
       }
@@ -84,12 +91,19 @@ function findFotoByName (e) {
 
   function onLoadMoreClick() {
     loadMoreBtn.hide() 
-    photoApiService.fetchPhotos().then(hits => {
-      if(hits.length === 0) {
+    photoApiService.fetchPhotos().then(data => {
+      numberOfHits += data.hits.length
+      if(totalNumberOfHits < numberOfHits) {
+        Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+        return
+      }
+      console.log("numberOfHits", numberOfHits)
+      console.log("data.totalHits", totalNumberOfHits)
+      if(data.hits.length === 0) {
         Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
       }
         
-      const markup = hits.map(el =>   
+      const markup = data.hits.map(el =>   
       `
        <div class="photo-card">
        
@@ -127,6 +141,6 @@ function findFotoByName (e) {
   
       }
     )
- 
+       
   }
   
