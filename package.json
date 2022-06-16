@@ -18,13 +18,18 @@
     "url": "https://andreyherzhov.github.io/goit-js-hw-11/issues"
   },
   "dependencies": {
-    "modern-normalize": "^1.1.0"
+    "axios": "^0.27.2",
+    "basiclightbox": "^5.0.4",
+    "lodash.debounce": "^4.0.8",
+    "modern-normalize": "^1.1.0",
+    "notiflix": "^3.2.5"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.6.0",
     "parcel": "^2.6.0",
     "parcel-reporter-clean-dist": "^1.0.4",
-    "posthtml-include": "^1.7.4"
+    "posthtml-include": "^1.7.4",
+    "simplelightbox": "^2.10.3"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead"
 }
